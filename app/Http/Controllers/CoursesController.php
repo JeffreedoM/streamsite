@@ -13,9 +13,7 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        return Inertia::render(
-            'Courses'
-        );
+        return Inertia::render('Courses/Teacher/Index');
     }
 
     /**
