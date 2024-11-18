@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CoursesController extends Controller
+class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +22,7 @@ class CoursesController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Courses/Teacher/CreateCourse');
     }
 
     /**
@@ -29,7 +30,14 @@ class CoursesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $field = $request->validate([
+            'course_title' => 'required|string'
+        ]);
+
+        $course = Course::create($field);
+        // dd($course->id);
+
+        return redirect()->route('course.edit', $course->id);
     }
 
     /**
@@ -45,7 +53,9 @@ class CoursesController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $course = Course::find($id);
+
+        return Inertia::render('Courses/Teacher/EditCourse', ['course' => $course]);
     }
 
     /**
@@ -53,7 +63,15 @@ class CoursesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $fields = $request->validate([
+            'course_title' => 'sometimes|required|string',
+            'course_description' => 'sometimes|string',
+            'course_image' => 'sometimes|string',
+        ]);
+
+        $course = Course::find($id);
+        $course->update($fields);
+        return redirect()->route('course.edit', $course->id);
     }
 
     /**

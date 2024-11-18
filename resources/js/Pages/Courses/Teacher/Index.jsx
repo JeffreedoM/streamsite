@@ -2,6 +2,8 @@ import React from "react";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { CoursesTable } from "./CoursesTable";
 import { columns } from "./columns";
+import { Button } from "@/components/ui/button";
+
 function Courses() {
   const data = [
     {

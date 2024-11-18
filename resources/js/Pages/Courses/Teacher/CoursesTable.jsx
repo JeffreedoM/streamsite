@@ -15,8 +15,12 @@ import {
 } from "@/components/ui/table";
 
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
+import { useState } from "react";
+import { Link } from "@inertiajs/react";
+
+import { useRoute } from "ziggy";
 export function CoursesTable({ columns, data }) {
   const [columnFilters, setColumnFilters] = useState([]);
   const table = useReactTable({
@@ -30,9 +34,11 @@ export function CoursesTable({ columns, data }) {
     },
   });
 
+  const route = useRoute(Ziggy);
+
   return (
     <>
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Search course..."
           value={table.getColumn("course_name")?.getFilterValue() ?? ""}
@@ -41,6 +47,9 @@ export function CoursesTable({ columns, data }) {
           }
           className="max-w-sm"
         />
+        <Link href={route("course.create")}>
+          <Button>Create Course</Button>
+        </Link>
       </div>
       <div className="rounded-md border">
         <Table>
