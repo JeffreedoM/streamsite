@@ -10,6 +10,7 @@ import { useDropzone } from "react-dropzone";
 import TitleForm from "./forms/TitleForm";
 import DescriptionForm from "./forms/DescriptionForm";
 import ImageForm from "./forms/ImageForm";
+import ChapterForm from "./forms/ChapterForm";
 
 function EditCourse({ course, completedFields, course_image_url, errors }) {
   return (
@@ -36,6 +37,9 @@ function EditCourse({ course, completedFields, course_image_url, errors }) {
             course_image_url={course_image_url}
             errors={errors}
           />
+        </div>
+        <div>
+          <ChapterForm />
         </div>
       </div>
     </div>
