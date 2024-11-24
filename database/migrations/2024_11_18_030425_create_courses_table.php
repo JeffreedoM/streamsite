@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('course_title');
             $table->string('course_description')->nullable();
             $table->string('course_image')->nullable();
+            $table->string('status')->default('draft');
             $table->timestamps();
         });
     }

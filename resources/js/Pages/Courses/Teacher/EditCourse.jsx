@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TeacherLayout } from "../../../layouts/TeacherLayout";
 
 // inertia
-import { router, useForm, usePage } from "@inertiajs/react";
+import { router, useForm, usePage, Link } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { Pencil, CirclePlus, Image, Trash2 } from "lucide-react";
 import { useDropzone } from "react-dropzone";
@@ -12,6 +12,14 @@ import DescriptionForm from "./forms/DescriptionForm";
 import ImageForm from "./forms/ImageForm";
 import ChapterForm from "./forms/ChapterForm";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 function EditCourse({
   course,
   completedFields,
@@ -19,6 +27,7 @@ function EditCourse({
   errors,
   course_chapters,
 }) {
+  console.log(course.course_title);
   return (
     <div>
       <div className="mb-10 flex items-center justify-between">
@@ -45,11 +54,32 @@ function EditCourse({
           />
         </div>
         <div>
-          <ChapterForm course={course} course_chapters={course_chapters}/>
+          <ChapterForm course={course} course_chapters={course_chapters} />
         </div>
       </div>
     </div>
   );
 }
-EditCourse.layout = (page) => <TeacherLayout children={page} title="Courses" />;
+
+EditCourse.layout = (page) => (
+  <TeacherLayout
+    children={page}
+    title="Courses"
+    breadcrumb={
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem className="hidden md:block">
+            <BreadcrumbLink>
+              <Link href="/courses">Courses</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="hidden md:block" />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{page.props.course.course_title}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    }
+  />
+);
 export default EditCourse;

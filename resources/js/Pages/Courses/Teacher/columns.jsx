@@ -11,17 +11,17 @@ import {
 
 export const columns = [
   {
-    accessorKey: "course_name",
-    header: "Course",
+    accessorKey: "course_title",
+    header: "Title",
   },
-  {
-    accessorKey: "length",
-    header: "Length",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
+  // {
+  //   accessorKey: "length",
+  //   header: "Length",
+  // },
+  // {
+  //   accessorKey: "status",
+  //   header: "Status",
+  // },
   {
     id: "actions",
     cell: ({ row }) => {
