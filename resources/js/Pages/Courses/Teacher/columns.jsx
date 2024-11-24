@@ -8,20 +8,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "@inertiajs/react";
 
 export const columns = [
   {
     accessorKey: "course_title",
     header: "Title",
   },
-  // {
-  //   accessorKey: "length",
-  //   header: "Length",
-  // },
-  // {
-  //   accessorKey: "status",
-  //   header: "Status",
-  // },
   {
     id: "actions",
     cell: ({ row }) => {
@@ -36,15 +29,20 @@ export const columns = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
+            {/*<DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>View payment details</DropdownMenuItem> */}
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem>
+              <Link href={`/course/create/${row.original.id}`}>
+                Edit Course
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
