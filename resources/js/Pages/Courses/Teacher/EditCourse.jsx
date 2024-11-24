@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AdminLayout } from "../../../layouts/AdminLayout";
+import { TeacherLayout } from "../../../layouts/TeacherLayout";
 
 // inertia
 import { router, useForm, usePage } from "@inertiajs/react";
@@ -51,5 +51,5 @@ function EditCourse({
     </div>
   );
 }
-EditCourse.layout = (page) => <AdminLayout children={page} title="Courses" />;
+EditCourse.layout = (page) => <TeacherLayout children={page} title="Courses" />;
 export default EditCourse;

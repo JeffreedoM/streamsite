@@ -1,10 +1,12 @@
 import React from "react";
-import { AdminLayout } from "../layouts/AdminLayout.jsx";
+import { TeacherLayout } from "../layouts/TeacherLayout.jsx";
 
 function Dashboard() {
-    return <div>Dashboard</div>;
+  return <div>Dashboard</div>;
 }
 
-Dashboard.layout = (page) => <AdminLayout children={page} title="Dashboard" />;
+Dashboard.layout = (page) => (
+  <TeacherLayout children={page} title="Dashboard" />
+);
 
 export default Dashboard;

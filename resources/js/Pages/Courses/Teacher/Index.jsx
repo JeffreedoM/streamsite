@@ -1,5 +1,5 @@
 import React from "react";
-import { AdminLayout } from "../../../layouts/AdminLayout";
+import { TeacherLayout } from "../../../layouts/TeacherLayout";
 import { CoursesTable } from "./CoursesTable";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
@@ -34,5 +34,5 @@ function Courses() {
   );
 }
 
-Courses.layout = (page) => <AdminLayout children={page} title="Courses" />;
+Courses.layout = (page) => <TeacherLayout children={page} title="Courses" />;
 export default Courses;

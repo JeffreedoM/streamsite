@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 import { ModeToggle } from "../components/mode-toggle";
 
-export function AdminLayout({ children }) {
+export function TeacherLayout({ children }) {
   return (
     <SidebarProvider>
       <AppSidebar />

@@ -1,8 +1,8 @@
 import React from "react";
-import { AdminLayout } from "../layouts/AdminLayout.jsx";
+import { TeacherLayout } from "../layouts/TeacherLayout.jsx";
 function Courses() {
     return <div>Courses</div>;
 }
 
-Courses.layout = (page) => <AdminLayout children={page} title="Courses" />;
+Courses.layout = (page) => <TeacherLayout children={page} title="Courses" />;
 export default Courses;
