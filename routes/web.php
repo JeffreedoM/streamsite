@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\CourseChapterController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -52,4 +53,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/course/create/{id}', [CourseController::class, 'edit'])->name('course.edit');
     Route::put('/course/update/{id}', [CourseController::class, 'update'])->name('course.update');
     Route::put('/course/updateImage/{id}', [CourseController::class, 'updateImage'])->name('course.updateImage');
+
+    // Chapter
+    Route::post('/chapter/create', [CourseChapterController::class, 'store'])->name('chapter.store');
+    Route::post('/chapter/{id}/updateOrder', [CourseChapterController::class, 'updateChapterOrders'])->name('chapter.updateOrder');
 });

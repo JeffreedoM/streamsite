@@ -12,7 +12,13 @@ import DescriptionForm from "./forms/DescriptionForm";
 import ImageForm from "./forms/ImageForm";
 import ChapterForm from "./forms/ChapterForm";
 
-function EditCourse({ course, completedFields, course_image_url, errors }) {
+function EditCourse({
+  course,
+  completedFields,
+  course_image_url,
+  errors,
+  course_chapters,
+}) {
   return (
     <div>
       <div className="mb-10 flex items-center justify-between">
@@ -39,7 +45,7 @@ function EditCourse({ course, completedFields, course_image_url, errors }) {
           />
         </div>
         <div>
-          <ChapterForm />
+          <ChapterForm course={course} course_chapters={course_chapters}/>
         </div>
       </div>
     </div>

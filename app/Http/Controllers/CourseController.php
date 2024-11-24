@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Course;
+use App\Models\CourseChapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -55,6 +56,9 @@ class CourseController extends Controller
     public function edit(string $id)
     {
         $course = Course::find($id);
+        $course_chapters = CourseChapter::where('course_id', $id)
+            ->orderBy('order', 'asc')
+            ->get();
 
         // Count the number of fields with a value
         $completedFields = collect([
@@ -71,6 +75,7 @@ class CourseController extends Controller
             'course' => $course,
             'completedFields' => $completedFields,
             'course_image_url' => Storage::url($course->course_image),
+            'course_chapters' => $course_chapters
         ]);
     }
 

@@ -18,8 +18,9 @@ return new class extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('chapter_name');
-            $table->string('chapter_description');
-            $table->string('chapter_video');
+            $table->string('chapter_description')->nullable();
+            $table->string('chapter_video')->nullable();
+            $table->integer('order')->default(1);
             $table->timestamps();
         });
     }
