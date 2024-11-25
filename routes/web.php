@@ -56,5 +56,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Chapter
     Route::post('/chapter/create', [CourseChapterController::class, 'store'])->name('chapter.store');
+    Route::get('/chapter/{id}', [CourseChapterController::class, 'show'])->name('chapter.show');
     Route::post('/chapter/{id}/updateOrder', [CourseChapterController::class, 'updateChapterOrders'])->name('chapter.updateOrder');
 });

@@ -143,7 +143,10 @@ function ChapterForm({ course, course_chapters }) {
                 <h4>{chapter.chapter_name}</h4>
                 {/* <p>{chapter.chapter_description}</p> */}
               </div>
-              <Link href="#" className="flex cursor-pointer text-xs">
+              <Link
+                href={`/chapter/${chapter.id}`}
+                className="flex cursor-pointer text-xs"
+              >
                 <Pencil size={18} />
               </Link>
             </Reorder.Item>

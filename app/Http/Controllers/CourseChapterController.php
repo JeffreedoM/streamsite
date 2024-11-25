@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CourseChapter;
+use Inertia\Inertia;
+use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Models\CourseChapter;
 
 class CourseChapterController extends Controller
 {
@@ -47,7 +49,13 @@ class CourseChapterController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $chapter = CourseChapter::find($id);
+        $course = Course::find($chapter->course_id);
+        return Inertia::render('Courses/Teacher/Chapter', [
+            'id' => $id,
+            'course_chapter' => $chapter,
+            'course' => $course
+        ]);
     }
 
     /**
