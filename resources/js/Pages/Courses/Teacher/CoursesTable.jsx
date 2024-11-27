@@ -41,9 +41,9 @@ export function CoursesTable({ columns, data }) {
       <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Search course..."
-          value={table.getColumn("course_name")?.getFilterValue() ?? ""}
+          value={table.getColumn("course_title")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("course_name")?.setFilterValue(event.target.value)
+            table.getColumn("course_title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -94,7 +94,7 @@ export function CoursesTable({ columns, data }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No Courses Yet. Create One.
                 </TableCell>
               </TableRow>
             )}

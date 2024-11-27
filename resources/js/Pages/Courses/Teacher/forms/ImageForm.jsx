@@ -35,21 +35,31 @@ function ImageForm({ course, course_image_url, errors }) {
   const { data, setData } = useForm({
     course_image,
   });
+
+  const imageForm = useForm({
+    course_image,
+  });
+
   const handleImageSubmit = (e) => {
     e.preventDefault();
 
     // setData("course_image", files[0]);
-    router.post(`/course/updateImage/${id}`, {
-      _method: "put",
-      course_image: data.course_image,
-      onSuccess: () => {
-        alert("Image updated!");
-        // setIsSubmitted(true); // Update state on successful submission
+    router.post(
+      `/course/updateImage/${id}`,
+      {
+        _method: "put",
+        course_image: data.course_image,
       },
-      onError: (error) => {
-        console.error("Error updating image:", error);
+      {
+        onSuccess: () => {
+          alert("Image updated!");
+          setFiles([]);
+        },
+        onError: (error) => {
+          console.error("Error updating image:", error);
+        },
       },
-    });
+    );
   };
 
   return (
@@ -99,7 +109,7 @@ function ImageForm({ course, course_image_url, errors }) {
               <img
                 src={course_image_url}
                 alt="Course Image"
-                className="max-h-[400px] w-full object-cover shadow-sm"
+                className="max-h-[400px] w-full rounded-md object-cover"
               />
             </div>
           ) : (

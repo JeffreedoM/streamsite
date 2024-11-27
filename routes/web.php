@@ -57,5 +57,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Chapter
     Route::post('/chapter/create', [CourseChapterController::class, 'store'])->name('chapter.store');
     Route::get('/chapter/{id}', [CourseChapterController::class, 'show'])->name('chapter.show');
+    Route::put('/chapter/{id}', [CourseChapterController::class, 'update'])->name('chapter.update');
     Route::post('/chapter/{id}/updateOrder', [CourseChapterController::class, 'updateChapterOrders'])->name('chapter.updateOrder');
+    Route::post('/chapter/{id}/video/upload', [CourseChapterController::class, 'process'])->name('chapterVideo.upload');
+    Route::put('/chapter/{id}/video/submit', [CourseChapterController::class, 'submitVideo'])->name('chapterVideo.submit');
+
+    Route::delete('/chapter/{id}/video/upload', [CourseChapterController::class, 'revert'])->name('chapterVideo.revert');
+
+    Route::get('/chapter/video/{id}', [CourseChapterController::class, 'getChapterVideo'])->name('chapter.video');
 });

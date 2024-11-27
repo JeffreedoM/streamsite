@@ -8,6 +8,7 @@ class CourseChapter extends Model
 {
     protected $fillable = [
         'chapter_name',
+        'chapter_description',
         'course_id',
         'order',
     ];

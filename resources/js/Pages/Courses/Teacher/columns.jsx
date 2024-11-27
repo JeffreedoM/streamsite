@@ -8,12 +8,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { Link } from "@inertiajs/react";
 
 export const columns = [
   {
     accessorKey: "course_title",
     header: "Title",
+  },
+  {
+    accessorKey: "Status",
+    cell: ({ row }) => {
+      return <Badge>{row.original.status}</Badge>;
+    },
   },
   {
     id: "actions",

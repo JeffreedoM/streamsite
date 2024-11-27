@@ -86,3 +86,27 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+/* the background color of the filepond drop area */
+.filepond--panel-root {
+  /* Apply Tailwind's background utility */
+  @apply !bg-muted-foreground/20;
+}
+
+.filepond--drop-label {
+  @apply !text-foreground;
+}
+
+.filepond--panel-top::after {
+  @apply !h-0 !border-none !bg-muted-foreground/20;
+}
+.filepond--panel-top::before {
+  @apply !h-0 !border-none !bg-muted-foreground/20;
+}
+
+.filepond--panel-bottom::after {
+  @apply !h-0 !border-none !bg-muted-foreground/20;
+}
+.filepond--panel-bottom::before {
+  @apply !h-0 !border-none !bg-muted-foreground/20;
+}
