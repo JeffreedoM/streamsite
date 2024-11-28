@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link, useForm, router, usePage } from "@inertiajs/react";
+import { Pencil } from "lucide-react";
 import ChapterVideoForm from "./forms/ChapterVideoForm";
 
 function Chapter({ course, course_chapter, video_url }) {
@@ -33,6 +34,7 @@ function Chapter({ course, course_chapter, video_url }) {
       {
         onSuccess: () => {
           alert("Chapter updated!");
+          setToggleEdit(false);
         },
         onError: (error) => {
           console.error("Error updating chapter:", error);
@@ -49,7 +51,16 @@ function Chapter({ course, course_chapter, video_url }) {
             onSubmit={handleSubmit}
             className="flex flex-col space-y-4 rounded-lg bg-muted px-6 py-4"
           >
-            {!setToggleEdit ? (
+            <div className="flex items-center justify-between font-semibold">
+              <h3 className="text-lg">Course Chapter</h3>
+              <div
+                onClick={() => setToggleEdit(!toggleEdit)}
+                className="flex cursor-pointer items-center gap-1 text-sm"
+              >
+                <Pencil size={14} className="text-sm" /> Edit Chapter
+              </div>
+            </div>
+            {toggleEdit ? (
               <>
                 <div>
                   <Label htmlFor="chapter_name">Chapter Name</Label>
@@ -80,13 +91,13 @@ function Chapter({ course, course_chapter, video_url }) {
               </>
             ) : (
               <>
-                <div>
+                <div className="text-sm">
                   <h3 className="font-semibold">Chapter Name</h3>
                   <div className="rounded-md bg-muted-foreground/20 px-4 py-3">
                     {chapter_name}
                   </div>
                 </div>
-                <div>
+                <div className="text-sm">
                   <h3 className="font-semibold">Chapter Description</h3>
                   <div className="rounded-md bg-muted-foreground/20 px-4 py-3">
                     {chapter_description}
@@ -97,13 +108,11 @@ function Chapter({ course, course_chapter, video_url }) {
           </form>
         </div>
         <div>
-          <div className="flex flex-col space-y-2 rounded-lg bg-muted px-6 py-4">
-            <h3>Video</h3>
+          
             <ChapterVideoForm
               course_chapter={course_chapter}
               video_url={video_url}
             />
-          </div>
         </div>
       </div>
     </div>

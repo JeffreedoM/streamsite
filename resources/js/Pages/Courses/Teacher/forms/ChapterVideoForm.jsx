@@ -26,10 +26,13 @@ registerPlugin(
 
 import { Button } from "@/components/ui/button";
 import { useForm, router, usePage } from "@inertiajs/react";
+import { Pencil } from "lucide-react";
+
 function ChapterVideoForm({ course_chapter, video_url }) {
   const { id, chapter_video } = course_chapter;
   const [files, setFiles] = useState([]);
   const [showSubmitBtn, setShowSubmitBtn] = useState(false);
+  const [toggleEdit, setToggleEdit] = useState(false);
   const { data, setData } = useForm({ submitVideo: false, filePath: null });
   const { status } = usePage().props;
 
@@ -52,82 +55,82 @@ function ChapterVideoForm({ course_chapter, video_url }) {
   const videoRef = useRef(null);
 
   return (
-    <div>
-      {chapter_video ? (
-        <div>
-          <video controls className="w-full">
-            <source src={video_url} type="video/mp4" />
-            {/* <source
-              src={`https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4`}
-              type="video/mp4"
-            /> */}
-            Your browser does not support the video tag.
-          </video>
-
-          {/* <ReactPlayer
-            ref={videoRef}
-            controls
-            url={`/storage/${chapter_video}`}
-            // url={
-            //   "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-            // }
-          /> */}
+    <div className="flex flex-col space-y-4 rounded-lg bg-muted px-6 py-4">
+      <div className="mb-6 flex items-center justify-between font-semibold">
+        <h3 className="text-lg">Course Video</h3>
+        <div
+          onClick={() => setToggleEdit(!toggleEdit)}
+          className="flex cursor-pointer items-center gap-1 text-sm"
+        >
+          <Pencil size={14} className="text-sm" /> Edit Video
         </div>
-      ) : (
-        <FilePond
-          files={files}
-          onupdatefiles={setFiles}
-          allowMultiple={false}
-          maxFiles={3}
-          server={{
-            process: {
-              url: `/chapter/${id}/video/upload`,
-              method: "POST",
-              withCredentials: true,
-              headers: {
-                "X-CSRF-TOKEN": document.querySelector(
-                  'meta[name="csrf-token"]',
-                ).content,
+      </div>
+      <div>
+        {chapter_video && !toggleEdit ? (
+          <div className="flex justify-center">
+            <ReactPlayer
+              ref={videoRef}
+              controls
+              url={video_url}
+              className="!h-auto !w-full"
+            />
+          </div>
+        ) : (
+          <FilePond
+            files={files}
+            onupdatefiles={setFiles}
+            allowMultiple={false}
+            maxFiles={3}
+            server={{
+              process: {
+                url: `/chapter/${id}/video/upload`,
+                method: "POST",
+                withCredentials: true,
+                headers: {
+                  "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                  ).content,
+                },
+                onload: (response) => {
+                  // Parse the response from the server to get the file path
+                  const { filePath } = JSON.parse(response); // Make sure filePath is sent in the response
+                  setData((prevData) => ({
+                    ...prevData,
+                    filePath, // Save the filePath
+                  }));
+                },
+                onerror: (error) => {
+                  console.error("File upload error:", error);
+                },
               },
-              onload: (response) => {
-                // Parse the response from the server to get the file path
-                const { filePath } = JSON.parse(response); // Make sure filePath is sent in the response
-                setData((prevData) => ({
-                  ...prevData,
-                  filePath, // Save the filePath
-                }));
+              revert: {
+                url: `/chapter/${id}/video/upload`,
+                method: "DELETE",
+                headers: {
+                  "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                  ).content,
+                },
               },
-              onerror: (error) => {
-                console.error("File upload error:", error);
-              },
-            },
-            revert: {
-              url: `/chapter/${id}/video/upload`,
-              method: "DELETE",
-              headers: {
-                "X-CSRF-TOKEN": document.querySelector(
-                  'meta[name="csrf-token"]',
-                ).content,
-              },
-            },
-          }}
-          onprocessfile={(error) => {
-            if (!error) {
-              setShowSubmitBtn(true);
-              setData("submitVideo", true);
-            }
-          }}
-          style={{
-            backgroundColor: "white",
-            borderRadius: "10px",
-            padding: "20px",
-            border: "2px solid #ddd",
-          }}
-          name="files"
-          acceptedFileTypes={["video/mp4"]}
-          labelIdle='Drag & Drop the video or <span class="filepond--label-action">Browse</span>'
-        />
-      )}
+            }}
+            onprocessfile={(error) => {
+              if (!error) {
+                setShowSubmitBtn(true);
+                setData("submitVideo", true);
+              }
+            }}
+            style={{
+              backgroundColor: "white",
+              borderRadius: "10px",
+              padding: "20px",
+              border: "2px solid #ddd",
+            }}
+            name="files"
+            acceptedFileTypes={["video/mp4"]}
+            labelIdle='Drag & Drop the video or <span class="filepond--label-action">Browse</span>'
+          />
+        )}
+      </div>
 
       {showSubmitBtn && (
         <form onSubmit={handleSubmit}>
