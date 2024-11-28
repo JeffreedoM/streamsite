@@ -45,6 +45,9 @@ function ChapterVideoForm({ course_chapter, video_url }) {
       {
         onSuccess: () => {
           alert("Chapter Video updated!");
+          setFiles([]);
+          setToggleEdit(false);
+          setShowSubmitBtn(false);
         },
         onError: (error) => {
           console.error("Error updating chapter video:", error);
@@ -62,7 +65,16 @@ function ChapterVideoForm({ course_chapter, video_url }) {
           onClick={() => setToggleEdit(!toggleEdit)}
           className="flex cursor-pointer items-center gap-1 text-sm"
         >
-          <Pencil size={14} className="text-sm" /> Edit Video
+          {toggleEdit ? (
+            <div className="rounded-sm bg-muted-foreground px-2 py-1 text-background">
+              Cancel
+            </div>
+          ) : (
+            <>
+              <Pencil size={14} className="text-sm" />
+              Edit Video
+            </>
+          )}
         </div>
       </div>
       <div>

@@ -57,7 +57,16 @@ function Chapter({ course, course_chapter, video_url }) {
                 onClick={() => setToggleEdit(!toggleEdit)}
                 className="flex cursor-pointer items-center gap-1 text-sm"
               >
-                <Pencil size={14} className="text-sm" /> Edit Chapter
+                {toggleEdit ? (
+                  <div className="rounded-sm bg-muted-foreground px-2 py-1 text-background">
+                    Cancel
+                  </div>
+                ) : (
+                  <>
+                    <Pencil size={14} className="text-sm" />
+                    Edit Chapter
+                  </>
+                )}
               </div>
             </div>
             {toggleEdit ? (
@@ -108,11 +117,10 @@ function Chapter({ course, course_chapter, video_url }) {
           </form>
         </div>
         <div>
-          
-            <ChapterVideoForm
-              course_chapter={course_chapter}
-              video_url={video_url}
-            />
+          <ChapterVideoForm
+            course_chapter={course_chapter}
+            video_url={video_url}
+          />
         </div>
       </div>
     </div>

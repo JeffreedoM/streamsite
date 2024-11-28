@@ -55,7 +55,7 @@ class CourseChapterController extends Controller
         $chapter = CourseChapter::find($id);
         $course = Course::find($chapter->course_id);
 
-        $video_url = route('chapter.video', ['id' => $id]);
+        $video_url = route('chapter.video', ['id' => $id]) . '?v=' . time();
         // dd(route('chapter.video', ['id' => $id]));
         return Inertia::render('Courses/Teacher/Chapter', [
             'id' => $id,
@@ -70,6 +70,8 @@ class CourseChapterController extends Controller
         $chapter = CourseChapter::find($id);
         // Get the video path from storage
         $filePath = storage_path('app/public/' . $chapter->chapter_video);
+
+        // dd($filePath);
         if (file_exists($filePath)) {
             // Return the video file with the Accept-Ranges header
             return response()->file($filePath, [
@@ -163,16 +165,25 @@ class CourseChapterController extends Controller
         return response()->json(['error' => 'File not found'], 404);
     }
 
+
     public function submitVideo(Request $request, string $id)
     {
         $filePath = $request->get('filePath');
-        $submitVideo = $request->getContent('submitVideo');
 
         if ($filePath) {
-            // Save the file path in the database
-            $video = CourseChapter::where('id', $id)->first();
-            $video->chapter_video = $filePath;
-            $video->save();
+            // Fetch the existing record
+            $video = CourseChapter::find($id);
+
+            if ($video) {
+                // Check if the current video exists in storage and delete it
+                if ($video->chapter_video && Storage::disk('public')->exists($video->chapter_video)) {
+                    Storage::disk('public')->delete($video->chapter_video);
+                }
+
+                // Update the database with the new file path
+                $video->chapter_video = $filePath;
+                $video->save();
+            }
         }
 
         return redirect()->route('chapter.show', $id)->with(['status' => 'success']);
