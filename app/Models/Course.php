@@ -10,5 +10,7 @@ class Course extends Model
         'course_title',
         'course_description',
         'course_image',
+        'status',
+        'password',
     ];
 }

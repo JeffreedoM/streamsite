@@ -42,8 +42,6 @@ function ChapterForm({ course, course_chapters }) {
   const [chapters, setChapters] = useState(course_chapters);
   const chapterCreateForm = useForm({ chapter_name: "", course_id: course.id });
 
-  console.log(chapters);
-
   useEffect(() => {
     console.log(chapters);
   }, [chapters]);

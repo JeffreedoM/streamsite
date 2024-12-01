@@ -11,6 +11,7 @@ import TitleForm from "./forms/TitleForm";
 import DescriptionForm from "./forms/DescriptionForm";
 import ImageForm from "./forms/ImageForm";
 import ChapterForm from "./forms/ChapterForm";
+import { Input } from "@/components/ui/input";
 
 import {
   Breadcrumb,
@@ -20,6 +21,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import PasswordForm from "./forms/PasswordForm";
 function EditCourse({
   course,
   completedFields,
@@ -27,16 +29,53 @@ function EditCourse({
   errors,
   course_chapters,
 }) {
-  console.log(course.course_title);
+  const publishCourse = (e) => {
+    e.preventDefault();
+
+    router.put(
+      `/course/update/${course.id}`,
+      { status: "published" },
+      {
+        onSuccess: () => console.log("Course published successfully!"),
+        onError: (errors) => console.error(errors),
+      },
+    );
+  };
+  const unPublishCourse = (e) => {
+    e.preventDefault();
+
+    router.put(
+      `/course/update/${course.id}`,
+      { status: "draft" },
+      {
+        onSuccess: () => console.log("Course unpublished successfully!"),
+        onError: (errors) => console.error(errors),
+      },
+    );
+  };
+
   return (
     <div>
       <div className="mb-10 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-bold">Course Setup</h1>
-          <p className="text-sm">Complete all fields ({completedFields}/6)</p>
+          <p className="text-sm">Complete all fields ({completedFields}/4)</p>
         </div>
         <div className="flex items-center gap-1">
-          <Button disabled={completedFields < 6}>Publish</Button>
+          {course.status === "draft" ? (
+            <Button
+              onClick={publishCourse}
+              type="submit"
+              disabled={completedFields < 4}
+            >
+              Publish
+            </Button>
+          ) : (
+            <Button onClick={unPublishCourse} type="submit">
+              Unpublish
+            </Button>
+          )}
+
           <Button>
             <Trash2 />
           </Button>
@@ -53,8 +92,9 @@ function EditCourse({
             errors={errors}
           />
         </div>
-        <div>
+        <div className="flex flex-col space-y-4">
           <ChapterForm course={course} course_chapters={course_chapters} />
+          <PasswordForm course={course} />
         </div>
       </div>
     </div>

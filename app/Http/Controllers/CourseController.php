@@ -61,11 +61,13 @@ class CourseController extends Controller
             ->orderBy('order', 'asc')
             ->get();
 
+        // dd($course_chapters->count() > 2);
         // Count the number of fields with a value
         $completedFields = collect([
             'course_title' => $course->course_title,
             'course_description' => $course->course_description,
             'course_image' => $course->course_image,
+            'course_chapter' => $course_chapters->count() > 2,
         ])->filter(function ($value) {
             return !empty($value); // Check if the field has a value
         })->count();
@@ -88,6 +90,8 @@ class CourseController extends Controller
         $fields = $request->validate([
             'course_title' => 'sometimes|required|string',
             'course_description' => 'sometimes|string',
+            'status' => 'string',
+            'password' => 'string'
         ]);
 
         $course = Course::find($id);
