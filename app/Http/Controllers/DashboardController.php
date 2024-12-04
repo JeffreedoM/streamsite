@@ -10,8 +10,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return Inertia::render(
-            'Dashboard'
-        );
+        $user = Auth::user();
+        $roles = json_decode($user->roles);  // Decode the roles from JSON
+
+
+        // Get the active role from session, or default to 'student' if no active role is set
+        $activeRole = session('active_role', 'student'); // Default to 'student' if no active role is set
+        return Inertia::render('Dashboard', [
+            'activeRole' => $activeRole,
+        ]);
     }
 }

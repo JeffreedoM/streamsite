@@ -40,6 +40,10 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn() => $request->session()->get('message'),
                 'status' => fn() => $request->session()->get('status'),
             ],
+            'auth' => [
+                'user' => fn() => $request->user(),
+                'activeRole' => fn() => session('active_role', 'student'), // Default to 'student'
+            ],
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Log;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,7 +19,7 @@ class SocialiteController extends Controller
     public function googleAuthentication()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = Socialite::driver('google')->stateless()->user();
 
             $user = User::where('google_id', $googleUser->id)->first();
 
@@ -27,12 +28,20 @@ class SocialiteController extends Controller
 
                 return redirect()->route('dashboard');
             } else {
+
+                if ($googleUser->email == 'jeffreedomtabz@gmail.com') // add more email to become teacher
+                {
+                    $roles = json_encode(['teacher', 'student']);
+                } else {
+                    $roles =  json_encode(['student']);
+                }
                 $userData = User::create([
                     'name' =>  $googleUser->name,
                     'email' =>  $googleUser->email,
                     'password' => "",
-                    'google_id' =>  $googleUser->id,
-                    'avatar' =>  $googleUser->avatar
+                    'google_id' => $googleUser->id,
+                    'avatar' =>  $googleUser->avatar,
+                    'roles' => $roles
                 ]);
 
                 if ($userData) {

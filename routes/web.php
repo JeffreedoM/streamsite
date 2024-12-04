@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\SocialiteController;
-use App\Http\Controllers\CourseChapterController;
-use App\Http\Controllers\CourseController;
-use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CourseChapterController;
+use App\Http\Controllers\Auth\SocialiteController;
 
 Route::get('/', function () {
     return inertia('Home');
@@ -42,7 +44,7 @@ Route::controller(SocialiteController::class)->group(function () {
         Dashboard    
 */
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -65,4 +67,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/chapter/{id}/video/upload', [CourseChapterController::class, 'revert'])->name('chapterVideo.revert');
 
     Route::get('/chapter/video/{id}', [CourseChapterController::class, 'getChapterVideo'])->name('chapter.video');
+
+
+    Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
+});
+
+
+Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/courses', [CourseController::class, 'index'])->name('course.index');
+    Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
 });

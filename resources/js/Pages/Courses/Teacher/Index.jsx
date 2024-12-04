@@ -11,7 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-function Courses({ courses }) {
+const Index = ({ courses }) => {
   const data = courses;
   //   {
   //     course_name: "Introduction to Computing",
@@ -39,9 +39,9 @@ function Courses({ courses }) {
       <CoursesTable columns={columns} data={data} />
     </div>
   );
-}
+};
 
-Courses.layout = (page) => (
+Index.layout = (page) => (
   <TeacherLayout
     children={page}
     title="Courses"
@@ -58,4 +58,4 @@ Courses.layout = (page) => (
     }
   />
 );
-export default Courses;
+export default Index;
