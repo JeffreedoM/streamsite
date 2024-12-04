@@ -18,10 +18,9 @@ class StudentController extends Controller
 
         // Decode the roles column to get an array of roles
         $roles = json_decode($user->roles);
-        $courses = Course::all();
-        return Inertia::render('Courses', [
-            'courses' => $courses,
-            'isTeacher' => in_array('teacher', $roles) // Check if the user has the 'teacher' role
+        $courses = Course::where('status', 'published')->get();
+        return Inertia::render('Courses/Student/Index', [
+            'courses' => $courses
         ]);
     }
 

@@ -23,7 +23,7 @@ class CheckRole
         // Check if the user has one of the roles passed to the middleware
         if (!array_intersect($roles, $userRoles)) {
             // If not, redirect them or abort with an error message
-            return redirect('/login')->with('error', 'Unauthorized');
+            return redirect('dashboard')->with('error', 'Unauthorized');
         }
 
         return $next($request);

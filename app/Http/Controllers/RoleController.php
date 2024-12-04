@@ -17,6 +17,6 @@ class RoleController extends Controller
         session(['active_role' => $request->role]);
 
         // Redirect back to the course page with the selected role
-        return back();
+        return redirect()->route('dashboard');
     }
 }

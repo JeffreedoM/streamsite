@@ -8,8 +8,34 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 const Index = ({ courses }) => {
-  return <div>Student Courses</div>;
+  console.log("courses:", courses);
+  return (
+    <div className="grid grid-cols-3">
+      {courses.map((course) => (
+        <Card>
+          <CardHeader>
+            <CardTitle>{course.course_title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <img src={course.image} alt="" srcset="" />
+          </CardContent>
+          <CardFooter>
+            <p>Card Footer</p>
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  );
 };
 
 Index.layout = (page) => (
@@ -21,7 +47,7 @@ Index.layout = (page) => (
         <BreadcrumbList>
           <BreadcrumbItem className="hidden md:block">
             <BreadcrumbItem href="#" className="text-primary">
-              Enrolled Courses
+              Courses
             </BreadcrumbItem>
           </BreadcrumbItem>
         </BreadcrumbList>
