@@ -16,10 +16,11 @@ class CourseFactory extends Factory
      */
     public function definition(): array
     {
+        $image = fake()->numberBetween(1, 4) . '.jpg';
         return [
             'course_title' => fake()->sentence(),
             'course_description' => fake()->paragraph(),
-            'course_image' => "",
+            'course_image' => 'course_images/' . $image,
             'status' => fake()->randomElement(['published', 'draft']),
             'password' => fake()->password(),
         ];

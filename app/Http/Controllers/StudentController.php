@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
@@ -18,9 +19,17 @@ class StudentController extends Controller
 
         // Decode the roles column to get an array of roles
         $roles = json_decode($user->roles);
-        $courses = Course::where('status', 'published')->get();
+
+        // Fetch published courses and append the full course_image URL
+        $courses = Course::where('status', 'published')->get()->map(function ($course) {
+            $course->course_image = $course->course_image
+                ? Storage::url($course->course_image)
+                : null; // Handle cases where course_image is null
+            return $course;
+        });
         return Inertia::render('Courses/Student/Index', [
             'courses' => $courses
+
         ]);
     }
 
@@ -46,7 +55,14 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $course = Course::where('id', $id)->first();
+        // dd($course);
+        // $course->course_image = Storage::url($course->course_image);
+        $video_url = route('chapter.video', ['id' => $id]) . '?v=' . time();
+        return Inertia::render('Courses/Student/CourseDetails', [
+            'course' => $course,
+            'video_url' => $video_url
+        ]);
     }
 
     /**
