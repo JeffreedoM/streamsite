@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Course;
+use App\Models\CourseChapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -57,10 +58,17 @@ class StudentController extends Controller
     {
         $course = Course::where('id', $id)->first();
         // dd($course);
+
+        $chapters = CourseChapter::where('course_id', $course->id)->orderBy('order', 'asc')->get();
+        $chapter = $chapters->first();
+        // dd($chapter);
+        // dd($course);
         // $course->course_image = Storage::url($course->course_image);
-        $video_url = route('chapter.video', ['id' => $id]) . '?v=' . time();
+        $video_url = route('chapter.video', ['id' => $chapter->id]) . '?v=' . time();
         return Inertia::render('Courses/Student/CourseDetails', [
             'course' => $course,
+            'chapter' => $chapter,
+            'chapters' => $chapters,
             'video_url' => $video_url
         ]);
     }
