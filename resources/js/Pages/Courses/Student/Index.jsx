@@ -37,7 +37,7 @@ const Index = ({ courses }) => {
             <h3 className="line-clamp-2 text-sm font-semibold">
               {course.course_title}
             </h3>
-            <p className="text-xs">3 Chapters</p>
+            {/* <p className="text-xs">3 Chapters</p> */}
           </div>
         </Link>
       ))}

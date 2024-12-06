@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CourseChapterController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\EnrollmentController;
 
 Route::get('/', function () {
     return inertia('Home');
@@ -80,4 +81,7 @@ Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
 
     Route::get('/courses', [StudentController::class, 'index'])->name('student-course.index');
     Route::get('/courses/{course_id}/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show');
+
+    // Enrollment
+    Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('student.enroll');
 });

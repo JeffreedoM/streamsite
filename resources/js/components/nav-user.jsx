@@ -145,7 +145,7 @@ export function NavUser({ user }) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <Link href={route("logout")} method="post">
-              <DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
                 <LogOut />
                 Logout
               </DropdownMenuItem>

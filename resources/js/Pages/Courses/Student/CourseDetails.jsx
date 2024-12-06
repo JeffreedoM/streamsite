@@ -38,7 +38,7 @@ function CourseDetails({ course, chapter, video_url, chapters }) {
         <div className="rounded-md border xl:col-span-1">
           <h3 className="p-4 text-xl font-semibold">{course.course_title}</h3>
 
-          <div className="flex h-[200px] flex-col space-y-2 overflow-y-auto overflow-x-hidden 2xl:h-[400px]">
+          <div className="flex h-[300px] flex-col space-y-2 overflow-y-auto overflow-x-hidden xl:h-auto">
             {chapters.map((chapter, i) => {
               // Determine if this chapter's link matches the current URL
               const isActive =

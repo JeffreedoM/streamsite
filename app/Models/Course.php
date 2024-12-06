@@ -16,4 +16,9 @@ class Course extends Model
         'status',
         'password',
     ];
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'enrollments')->withTimestamps();
+    }
 }
