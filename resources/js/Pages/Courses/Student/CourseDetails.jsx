@@ -7,37 +7,58 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Link, usePage } from "@inertiajs/react";
 import ReactPlayer from "react-player";
 function CourseDetails({ course, chapter, video_url, chapters }) {
   console.log(chapter);
   console.log(chapters);
   console.log(video_url);
+
+  const { url } = usePage();
   return (
-    <div className="flex gap-x-4">
-      <div className="flex w-full flex-col space-y-4">
-        <div className="rounded-md">
+    <div className="">
+      <div className="grid gap-4 xl:grid-cols-3">
+        <div className="relative rounded-md bg-muted pt-[56.25%] xl:col-span-2">
           <ReactPlayer
             url={video_url}
             controls
             width="100%"
             height="100%"
-            className="rounded-md"
+            className="absolute left-0 top-0 overflow-hidden rounded-md"
           />
         </div>
-        <h1 className="text-lg font-semibold">{chapter.chapter_name}</h1>
-        <div className="rounded-md bg-muted p-4">
-          <p className="text-sm">{chapter.chapter_description}</p>
+
+        <div className="order-3 flex flex-col space-y-2 xl:order-2 xl:col-span-2">
+          <h1 className="text-lg font-semibold">{chapter.chapter_name}</h1>
+          <div className="rounded-md bg-muted p-4">
+            <p className="text-sm">{chapter.chapter_description}</p>
+          </div>
         </div>
-      </div>
-      <div className="w-[50%] rounded-md border p-4">
-        <h3 className="mb-4 text-xl font-semibold">{course.course_title}</h3>
-        <div className="flex flex-col space-y-2">
-          {chapters.map((chapter, i) => (
-            <div className="-mx-4 flex cursor-pointer p-4 text-sm hover:bg-muted">
-              <div className="w-8">{i + 1}</div>
-              <span className="font-semibold">{chapter.chapter_name}</span>
-            </div>
-          ))}
+
+        <div className="rounded-md border xl:col-span-1">
+          <h3 className="p-4 text-xl font-semibold">{course.course_title}</h3>
+
+          <div className="flex h-[200px] flex-col space-y-2 overflow-y-auto overflow-x-hidden 2xl:h-[400px]">
+            {chapters.map((chapter, i) => {
+              // Determine if this chapter's link matches the current URL
+              const isActive =
+                url === `/courses/${course.id}/${chapter.id}` ||
+                (!url.includes(`${course.id}/`) && i === 0); // Fallback to first index if no chapter ID in URL
+              return (
+                <Link
+                  href={`/courses/${course.id}/${chapter.id}`}
+                  className={`flex cursor-pointer p-4 text-sm hover:bg-muted ${
+                    isActive ? "bg-muted" : ""
+                  }`}
+                >
+                  <div className="w-6">{i + 1}.</div>
+                  <span className="line-clamp-1 font-semibold">
+                    {chapter.chapter_name}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

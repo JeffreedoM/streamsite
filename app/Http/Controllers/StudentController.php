@@ -54,17 +54,34 @@ class StudentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $course_id, string $chapter_id = null)
     {
-        $course = Course::where('id', $id)->first();
-        // dd($course);
+        $course = Course::where('id', $course_id)->first();
+        if ($chapter_id) {
+            // if there is chapter_id in params, course/{course_id}/{chapter_id}
+            // get all chapters using course id
 
-        $chapters = CourseChapter::where('course_id', $course->id)->orderBy('order', 'asc')->get();
-        $chapter = $chapters->first();
+            $chapters = CourseChapter::where('course_id', $course_id)->orderBy('order', 'asc')->get();
+
+            // get the chapter using the chapter_id in the params
+            $chapter = CourseChapter::where('id', $chapter_id)->first();
+
+            // set the video id using chapter_id
+            $video_url = route('chapter.video', ['id' => $chapter_id]) . '?v=' . time();
+        } else {
+            // If there is no chapter_id params, courses/{course_id}
+            // get the chapter which has order = 1
+            // get the id of that first chapter and set that to the video
+
+            $chapters = CourseChapter::where('course_id', $course_id)->orderBy('order', 'asc')->get();
+            $chapter = $chapters->first();
+            $video_url = route('chapter.video', ['id' => $chapter->id]) . '?v=' . time();
+        }
+
         // dd($chapter);
         // dd($course);
         // $course->course_image = Storage::url($course->course_image);
-        $video_url = route('chapter.video', ['id' => $chapter->id]) . '?v=' . time();
+
         return Inertia::render('Courses/Student/CourseDetails', [
             'course' => $course,
             'chapter' => $chapter,

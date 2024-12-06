@@ -76,8 +76,8 @@ Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
 Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Route::get('/courses', [CourseController::class, 'index'])->name('course.index');
-    Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
+    // Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
 
     Route::get('/courses', [StudentController::class, 'index'])->name('student-course.index');
-    Route::get('/courses/{id}', [StudentController::class, 'show'])->name('student-course.show');
+    Route::get('/courses/{course_id}/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show');
 });

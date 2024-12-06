@@ -60,6 +60,14 @@ export function NavUser({ user }) {
   };
 
   console.log(user);
+
+  // Parse the roles string into an array
+  const roles = JSON.parse(user.roles);
+
+  // Check if it contains only 'student'
+  const isStudentOnly =
+    Array.isArray(roles) && roles.length === 1 && roles[0] === "student";
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -103,23 +111,25 @@ export function NavUser({ user }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                {activeRole == "teacher" ? (
-                  <>
-                    <PiStudentBold />
-                    <button onClick={() => switchRole("student")}>
-                      Switch to Student
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <FaChalkboardTeacher />
-                    <button onClick={() => switchRole("teacher")}>
-                      Switch to Teacher
-                    </button>
-                  </>
-                )}
-              </DropdownMenuItem>
+              {!isStudentOnly && (
+                <DropdownMenuItem>
+                  {activeRole == "teacher" ? (
+                    <>
+                      <PiStudentBold />
+                      <button onClick={() => switchRole("student")}>
+                        Switch to Student
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <FaChalkboardTeacher />
+                      <button onClick={() => switchRole("teacher")}>
+                        Switch to Teacher
+                      </button>
+                    </>
+                  )}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
