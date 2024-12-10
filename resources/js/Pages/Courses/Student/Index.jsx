@@ -19,13 +19,14 @@ import {
 import img from "../../../../../storage/app/public/course_images/img-placeholder.jpg";
 import { Link } from "@inertiajs/react";
 
-const Index = ({ courses }) => {
+const Index = ({ courses}) => {
   console.log("courses:", courses);
   return (
     <div className="grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3 xl:grid-cols-4">
       {courses.map((course) => (
         <Link
-          href={`courses/${course.id}`}
+          // href={`courses/${course.id}`}
+          href={`courses/enroll/${course.id}`}
           className="group flex max-h-[280px] cursor-pointer flex-col gap-y-2 overflow-hidden bg-background"
         >
           <img
