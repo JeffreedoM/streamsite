@@ -27,6 +27,7 @@ registerPlugin(
 import { Button } from "@/components/ui/button";
 import { useForm, router, usePage } from "@inertiajs/react";
 import { Pencil } from "lucide-react";
+import { useSnackbar } from "notistack";
 
 function ChapterVideoForm({ course_chapter, video_url }) {
   const { id, chapter_video } = course_chapter;
@@ -35,6 +36,7 @@ function ChapterVideoForm({ course_chapter, video_url }) {
   const [toggleEdit, setToggleEdit] = useState(false);
   const { data, setData } = useForm({ submitVideo: false, filePath: null });
   const { status } = usePage().props;
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,13 +46,26 @@ function ChapterVideoForm({ course_chapter, video_url }) {
       { _method: "put", ...data },
       {
         onSuccess: () => {
-          alert("Chapter Video updated!");
           setFiles([]);
           setToggleEdit(false);
           setShowSubmitBtn(false);
+          enqueueSnackbar("Video successfully updated!", {
+            variant: "success",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
         },
         onError: (error) => {
-          console.error("Error updating chapter video:", error);
+          // console.error("Error updating chapter video:", error);
+          enqueueSnackbar(error, {
+            variant: "success",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
         },
       },
     );
@@ -65,15 +80,19 @@ function ChapterVideoForm({ course_chapter, video_url }) {
           onClick={() => setToggleEdit(!toggleEdit)}
           className="flex cursor-pointer items-center gap-1 text-sm"
         >
-          {toggleEdit ? (
-            <div className="rounded-sm bg-muted-foreground px-2 py-1 text-background">
-              Cancel
-            </div>
+          {course_chapter.chapter_video ? (
+            toggleEdit ? (
+              <div className="rounded-sm bg-muted-foreground px-2 py-1 text-background">
+                Cancel
+              </div>
+            ) : (
+              <>
+                <Pencil size={14} className="text-sm" />
+                Edit Video
+              </>
+            )
           ) : (
-            <>
-              <Pencil size={14} className="text-sm" />
-              Edit Video
-            </>
+            ""
           )}
         </div>
       </div>
