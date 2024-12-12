@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class EnrollmentController extends Controller
 {
@@ -30,5 +30,15 @@ class EnrollmentController extends Controller
         }
 
         return redirect()->route('student-course.show', $courseId)->with('message', 'Successfully enrolled!');
+    }
+
+    public function viewEnrollment($course_id)
+    {
+        $course = Course::find($course_id);
+        // dd($course);
+        return Inertia::render('Courses/Student/CourseEnroll', [
+            'course' => $course,
+            'course_image_url' => Storage::url($course->course_image)
+        ]);
     }
 }

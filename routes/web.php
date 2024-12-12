@@ -80,11 +80,18 @@ Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
     // Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
 
     Route::get('/courses', [StudentController::class, 'index'])->name('student-course.index');
-    Route::get('/courses/{course_id}/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show');
+
 
     // Enrollment
+<<<<<<< HEAD
     Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('student.enroll');
 
     // Route::get('/courses/{course_id}/progress', [StudentController::class, 'getProgress'])->name('course.progress');
     Route::post('/chapter/{chapter_id}/complete', [StudentController::class, 'markComplete'])->name('chapter.complete');
+=======
+    Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('enrollment.enroll');
+    Route::get('/courses/enroll/{course_id}', [EnrollmentController::class, 'viewEnrollment'])->name('enrollment.view');
+
+    Route::get('/courses/{course_id}/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show');
+>>>>>>> d7d4eadc66f1978d5bf88ba69136f0d03c026f90
 });
