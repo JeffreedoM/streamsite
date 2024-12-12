@@ -1,6 +1,7 @@
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SnackbarProvider, useSnackbar } from "notistack";
 createInertiaApp({
   resolve: (name) => {
     const pages = import.meta.glob("./Pages/**/*.jsx", { eager: true });
@@ -9,7 +10,14 @@ createInertiaApp({
   setup({ el, App, props }) {
     createRoot(el).render(
       <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-        <App {...props} />
+        <SnackbarProvider
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
+          <App {...props} />
+        </SnackbarProvider>
       </ThemeProvider>,
     );
   },

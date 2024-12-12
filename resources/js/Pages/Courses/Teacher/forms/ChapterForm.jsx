@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SnackbarProvider, useSnackbar } from "notistack";
 // const chapters = [
 //   {
 //     id: 1,
@@ -41,6 +42,7 @@ import { Label } from "@/components/ui/label";
 function ChapterForm({ course, course_chapters }) {
   const [chapters, setChapters] = useState(course_chapters);
   const chapterCreateForm = useForm({ chapter_name: "", course_id: course.id });
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
     console.log(chapters);
@@ -58,6 +60,14 @@ function ChapterForm({ course, course_chapters }) {
 
         // clear chapter_name input
         chapterCreateForm.setData("chapter_name", "");
+
+        enqueueSnackbar("Chapters successfully added!", {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        });
       },
     });
   };
@@ -76,9 +86,24 @@ function ChapterForm({ course, course_chapters }) {
   };
 
   const updateChapterOrders = (updatedChapters) => {
-    router.post(`/chapter/${course.id}/updateOrder`, {
-      chapters: updatedChapters,
-    });
+    router.post(
+      `/chapter/${course.id}/updateOrder`,
+      {
+        chapters: updatedChapters,
+      },
+      {
+        onSuccess: () => {
+          enqueueSnackbar("Chapters successfully updated!", {
+            variant: "success",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
+        },
+        onError: () => {},
+      },
+    );
   };
 
   return (

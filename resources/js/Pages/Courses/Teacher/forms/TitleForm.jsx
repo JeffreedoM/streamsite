@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
+import {  useSnackbar } from "notistack";
 
 function TitleForm({ course }) {
   const { id, course_title } = course;
   const titleForm = useForm({ course_title });
   const [toggleCourseTitle, setToggleCourseTitle] = useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleSubmit = (form, successCallback) => (e) => {
     e.preventDefault();
@@ -21,8 +23,14 @@ function TitleForm({ course }) {
     });
   };
   const handleTitleSubmit = handleSubmit(titleForm, () => {
-    alert("Title updated!");
     setToggleCourseTitle(false);
+    enqueueSnackbar("Title successfully updated!", {
+      variant: "success",
+      anchorOrigin: {
+        vertical: "top",
+        horizontal: "center",
+      },
+    });
   });
 
   return (

@@ -8,17 +8,25 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 function DescriptionForm({ course }) {
   const { id, course_description } = course;
   const descriptionForm = useForm({ course_description });
   const [toggleCourseDescription, setToggleCourseDescription] = useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handleDescriptionSubmit = (e) => {
     e.preventDefault();
     descriptionForm.put(`/course/update/${id}`, {
       onSuccess: () => {
-        alert("Description updated!");
+        enqueueSnackbar("Description successfully updated!", {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        });
         setToggleCourseDescription(false);
       },
     });

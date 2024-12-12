@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 function PasswordForm({ course }) {
   const { id, password } = course;
   const passwordForm = useForm({ password });
   const [togglePassword, setTogglePassword] = useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
@@ -20,8 +22,14 @@ function PasswordForm({ course }) {
     passwordForm.put(`/course/update/${id}`, {
       ...passwordForm.data, // Spread passwordForm data
       onSuccess: () => {
-        console.log("Password edited successfully!");
         setTogglePassword(false); // You might want to hide or reset the form
+        enqueueSnackbar("Password successfully updated!", {
+          variant: "success",
+          anchorOrigin: {
+            vertical: "top",
+            horizontal: "center",
+          },
+        });
       },
       onError: (errors) => {
         console.error(errors);
