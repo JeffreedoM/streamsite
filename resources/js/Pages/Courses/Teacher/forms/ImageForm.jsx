@@ -5,6 +5,7 @@ import { router, useForm, usePage } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import { Pencil, CirclePlus, Image } from "lucide-react";
 import { useDropzone } from "react-dropzone";
+import { SnackbarProvider, useSnackbar } from "notistack";
 
 function ImageForm({ course, course_image_url, errors }) {
   const { id, course_image } = course;
@@ -26,6 +27,7 @@ function ImageForm({ course, course_image_url, errors }) {
       );
     },
   });
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
     // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
@@ -52,11 +54,24 @@ function ImageForm({ course, course_image_url, errors }) {
       },
       {
         onSuccess: () => {
-          alert("Image updated!");
           setFiles([]);
+          enqueueSnackbar("Image successfully updated!", {
+            variant: "success",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
         },
         onError: (error) => {
           console.error("Error updating image:", error);
+          enqueueSnackbar(error.course_image, {
+            variant: "error",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
         },
       },
     );
@@ -122,7 +137,7 @@ function ImageForm({ course, course_image_url, errors }) {
       {errors.course_image && (
         <div className="text-sm text-red-500">{errors.course_image}</div>
       )}
-      {flash.status == null && files && files.length >= 1 && (
+      {files && files.length >= 1 && (
         <div>
           <Button>Save</Button>
         </div>
