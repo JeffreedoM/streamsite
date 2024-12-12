@@ -100,7 +100,7 @@ class CourseChapterController extends Controller
     {
         $fields = $request->validate([
             'chapter_name' => 'required|string',
-            'chapter_description' => 'string',
+            'chapter_description' => 'required|string',
         ]);
 
         $chapter = CourseChapter::find($id);

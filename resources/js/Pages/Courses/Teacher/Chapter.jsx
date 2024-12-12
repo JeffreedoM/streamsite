@@ -13,12 +13,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link, useForm, router, usePage } from "@inertiajs/react";
 import { Pencil } from "lucide-react";
+import { SnackbarProvider, useSnackbar } from "notistack";
 import ChapterVideoForm from "./forms/ChapterVideoForm";
 
 function Chapter({ course, course_chapter, video_url }) {
   const { id, chapter_name, chapter_description } = course_chapter;
   const { errors } = usePage().props;
   const [toggleEdit, setToggleEdit] = useState(false);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const { data, setData } = useForm({
     chapter_name,
@@ -33,11 +35,24 @@ function Chapter({ course, course_chapter, video_url }) {
       { _method: "put", ...data },
       {
         onSuccess: () => {
-          alert("Chapter updated!");
           setToggleEdit(false);
+          enqueueSnackbar("Chapter successfully updated!", {
+            variant: "success",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
         },
         onError: (error) => {
           console.error("Error updating chapter:", error);
+          enqueueSnackbar(error.chapter_description, {
+            variant: "error",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
         },
       },
     );
@@ -93,6 +108,11 @@ function Chapter({ course, course_chapter, video_url }) {
                       setData("chapter_description", e.target.value)
                     }
                   />
+                  {errors && errors.chapter_description && (
+                    <div className="text-sm text-destructive">
+                      {errors.chapter_description}
+                    </div>
+                  )}
                 </div>
                 <div>
                   <Button type="submit">Save</Button>
