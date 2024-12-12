@@ -84,4 +84,7 @@ Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
 
     // Enrollment
     Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('student.enroll');
+
+    // Route::get('/courses/{course_id}/progress', [StudentController::class, 'getProgress'])->name('course.progress');
+    Route::post('/chapter/{chapter_id}/complete', [StudentController::class, 'markComplete'])->name('chapter.complete');
 });

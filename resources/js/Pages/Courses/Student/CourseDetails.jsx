@@ -7,12 +7,60 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Link, usePage } from "@inertiajs/react";
+import { Button } from "@/components/ui/button";
+import { Link, router, usePage } from "@inertiajs/react";
 import ReactPlayer from "react-player";
-function CourseDetails({ course, chapter, video_url, chapters }) {
-  console.log(chapter);
-  console.log(chapters);
-  console.log(video_url);
+import { CircleCheckBig, CircleX } from "lucide-react";
+import { useSnackbar } from "notistack";
+function CourseDetails({
+  course,
+  chapter,
+  video_url,
+  chapters,
+  is_completed,
+  progress,
+}) {
+  // console.log(chapter);
+  // console.log(chapters);
+  // console.log(video_url);
+  // console.log(chapter.id);
+
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
+  console.log(progress);
+  const markComplete = (forceComplete = false) => {
+    router.post(
+      `/chapter/${chapter.id}/complete`,
+      { forceComplete },
+      {
+        onSuccess: (page) => {
+          // Optional: Handle successful completion
+          // console.log("Chapter marked as complete:", page.props);
+          const message = page.props.is_completed
+            ? "Chapter successfully marked as complete!"
+            : "Chapter completion undone.";
+          enqueueSnackbar(message, {
+            variant: "success",
+            anchorOrigin: {
+              vertical: "top",
+              horizontal: "center",
+            },
+          });
+        },
+        onError: (errors) => {
+          // Optional: Handle errors
+          // console.error("Error marking chapter as complete:", errors);
+          enqueueSnackbar(errors.error, {
+            variant: "error",
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "right",
+            },
+          });
+        },
+      },
+    );
+  };
 
   const { url } = usePage();
   return (
@@ -25,11 +73,32 @@ function CourseDetails({ course, chapter, video_url, chapters }) {
             width="100%"
             height="100%"
             className="absolute left-0 top-0 overflow-hidden rounded-md"
+            onEnded={() => {
+              if (!is_completed) {
+                markComplete(true); // Only mark as complete if it's not already completed
+              }
+            }}
           />
         </div>
 
-        <div className="order-3 flex flex-col space-y-2 xl:order-2 xl:col-span-2">
-          <h1 className="text-lg font-semibold">{chapter.chapter_name}</h1>
+        <div className="order-3 flex flex-col space-y-6 xl:order-2 xl:col-span-2">
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-semibold">{chapter.chapter_name}</h1>
+            {!is_completed ? (
+              <Button className="text-xs" onClick={() => markComplete()}>
+                Mark as complete <CircleCheckBig />
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                className="text-xs"
+                onClick={() => markComplete()}
+              >
+                Undo completion
+                <CircleX />
+              </Button>
+            )}
+          </div>
           <div className="rounded-md bg-muted p-4">
             <p className="text-sm">{chapter.chapter_description}</p>
           </div>

@@ -15,4 +15,9 @@ class CourseChapter extends Model
         'course_id',
         'order',
     ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
 }

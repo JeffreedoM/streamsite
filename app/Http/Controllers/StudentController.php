@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Course;
-use App\Models\CourseChapter;
 use Illuminate\Http\Request;
+use App\Models\CourseChapter;
+use App\Models\UserCourseProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+
+use function Laravel\Prompts\progress;
 
 class StudentController extends Controller
 {
@@ -18,21 +21,34 @@ class StudentController extends Controller
     {
         $user = Auth::user();
 
-        // Decode the roles column to get an array of roles
-        $roles = json_decode($user->roles);
+        // Fetch unenrolled courses (published and not enrolled by the user)
+        $unenrolledCourses = Course::where('status', 'published')
+            ->whereNotIn('id', $user->courses->pluck('id'))
+            ->get()
+            ->map(function ($course) {
+                // Append the full course_image URL
+                $course->course_image = $course->course_image
+                    ? Storage::url($course->course_image)
+                    : null;
+                return $course;
+            });
 
-        // Fetch published courses and append the full course_image URL
-        $courses = Course::where('status', 'published')->get()->map(function ($course) {
+        // Fetch enrolled courses for the user
+        $enrolledCourses = $user->courses->map(function ($course) {
+            // Append the full course_image URL
             $course->course_image = $course->course_image
                 ? Storage::url($course->course_image)
-                : null; // Handle cases where course_image is null
+                : null;
             return $course;
         });
-        return Inertia::render('Courses/Student/Index', [
-            'courses' => $courses
 
+        return Inertia::render('Courses/Student/Index', [
+            'unenrolledCourses' => $unenrolledCourses,
+            'enrolledCourses' => $enrolledCourses,
         ]);
     }
+
+
 
 
     /**
@@ -56,39 +72,46 @@ class StudentController extends Controller
      */
     public function show(string $course_id, string $chapter_id = null)
     {
-        $course = Course::where('id', $course_id)->first();
-        if ($chapter_id) {
-            // if there is chapter_id in params, course/{course_id}/{chapter_id}
-            // get all chapters using course id
+        $user = Auth::user();
 
-            $chapters = CourseChapter::where('course_id', $course_id)->orderBy('order', 'asc')->get();
+        // Get the course in a single query
+        $course = Course::findOrFail($course_id);
 
-            // get the chapter using the chapter_id in the params
-            $chapter = CourseChapter::where('id', $chapter_id)->first();
+        // Get all chapters for the course, ordered by 'order'
+        $chapters = CourseChapter::where('course_id', $course_id)->orderBy('order', 'asc')->get();
 
-            // set the video id using chapter_id
-            $video_url = route('chapter.video', ['id' => $chapter_id]) . '?v=' . time();
-        } else {
-            // If there is no chapter_id params, courses/{course_id}
-            // get the chapter which has order = 1
-            // get the id of that first chapter and set that to the video
+        // Determine which chapter to display
+        $chapter = $chapter_id ? CourseChapter::find($chapter_id) : $chapters->first();
 
-            $chapters = CourseChapter::where('course_id', $course_id)->orderBy('order', 'asc')->get();
-            $chapter = $chapters->first();
-            $video_url = route('chapter.video', ['id' => $chapter->id]) . '?v=' . time();
-        }
+        // Get the video URL for the chapter
+        $video_url = route('chapter.video', ['id' => $chapter->id]) . '?v=' . time();
 
-        // dd($chapter);
-        // dd($course);
-        // $course->course_image = Storage::url($course->course_image);
+        // Check if the chapter is completed for the user
+        $isCompleted = UserCourseProgress::where('user_id', $user->id)
+            ->where('chapter_id', $chapter->id)
+            ->value('is_completed'); // Retrieves only the is_completed value
 
+        // Get all progress for the user for this course (eager load chapter data)
+        $progress = UserCourseProgress::with('chapter')
+            ->where('user_id', $user->id)
+            ->whereHas('chapter', function ($query) use ($course_id) {
+                $query->where('course_id', $course_id);
+            })
+            ->get();
+
+        // dd($progress);
+
+        // Render the page with the required data
         return Inertia::render('Courses/Student/CourseDetails', [
             'course' => $course,
             'chapter' => $chapter,
             'chapters' => $chapters,
-            'video_url' => $video_url
+            'video_url' => $video_url,
+            'progress' => $progress,
+            'is_completed' => $isCompleted
         ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -112,5 +135,48 @@ class StudentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function markComplete(Request $request, $chapter_id)
+    {
+        $user = Auth::user();
+
+        // Get the current chapter details
+        $currentChapter = CourseChapter::findOrFail($chapter_id);
+
+        // Check if there is a previous chapter
+        $previousChapter = CourseChapter::where('course_id', $currentChapter->course_id)
+            ->where('order', $currentChapter->order - 1)
+            ->first();
+
+        if ($previousChapter) {
+            // Check if the previous chapter is completed
+            $isPreviousCompleted = UserCourseProgress::where('user_id', $user->id)
+                ->where('chapter_id', $previousChapter->id)
+                ->value('is_completed');
+
+            if (!$isPreviousCompleted) {
+                return back()->withErrors(['error' => 'Complete the previous chapter first!']);
+            }
+        }
+
+        // Mark or unmark the current chapter as completed
+        $progress = UserCourseProgress::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'chapter_id' => $chapter_id,
+            ],
+            [] // Leave other fields unchanged
+        );
+
+        // Handle forceComplete flag
+        if ($request->forceComplete) {
+            $progress->is_completed = true; // Ensure it's marked as completed
+        } else {
+            $progress->is_completed = !$progress->is_completed; // Toggle completion
+        }
+        $progress->save();
+
+        return back();
     }
 }
