@@ -59,7 +59,7 @@ export function NavUser({ user }) {
     );
   };
 
-  console.log(user);
+  // console.log(user);
 
   // Parse the roles string into an array
   const roles = JSON.parse(user.roles);
