@@ -45,7 +45,14 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Drop this tables first to avoid conflict in foreign keys
+        Schema::dropIfExists('enrollments');
+        Schema::dropIfExists('user_course_progress');
+
+        // Drop the users table that has the primary key inherited by other tables above
         Schema::dropIfExists('users');
+
+
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
     }

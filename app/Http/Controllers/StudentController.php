@@ -99,6 +99,22 @@ class StudentController extends Controller
             })
             ->get();
 
+        // Get all chapters for the course
+        $totalChapters = CourseChapter::where('course_id', $course_id)->count();
+
+        // Get completed chapters for the user in the course
+        $completedChapters = UserCourseProgress::with('chapter')
+            ->where('user_id', $user->id)
+            ->whereHas('chapter', function ($query) use ($course_id) {
+                $query->where('course_id', $course_id);
+            })
+            ->where('is_completed', true)
+            ->count();
+
+        // Calculate percentage
+        $completionPercentage = $totalChapters > 0
+            ? round(($completedChapters / $totalChapters) * 100, 2)
+            : 0;
         // dd($progress);
 
         // Render the page with the required data
@@ -108,7 +124,8 @@ class StudentController extends Controller
             'chapters' => $chapters,
             'video_url' => $video_url,
             'progress' => $progress,
-            'is_completed' => $isCompleted
+            'is_completed' => $isCompleted,
+            'completionPercentage' => $completionPercentage
         ]);
     }
 

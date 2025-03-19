@@ -84,7 +84,7 @@ const Index = ({ enrolledCourses, unenrolledCourses }) => {
               <img
                 src={course.course_image ? course.course_image : img}
                 alt=""
-                className="h-[150px] origin-bottom overflow-hidden object-cover transition-transform duration-150 group-hover:scale-110 md:h-[200px]"
+                className="h-[150px] w-full origin-bottom overflow-hidden object-cover transition-transform duration-150 group-hover:scale-110 md:h-[200px]"
               />
               <div className="flex flex-grow flex-col justify-between space-y-2">
                 <h3 className="line-clamp-2 text-left text-sm font-semibold">

@@ -110,7 +110,7 @@ EditCourse.layout = (page) => (
         <BreadcrumbList>
           <BreadcrumbItem className="hidden md:block">
             <BreadcrumbLink>
-              <Link href="/courses">Courses</Link>
+              <Link href="/teacher/courses">Courses</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="hidden md:block" />

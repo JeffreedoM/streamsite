@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CourseChapterController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\EnrolledStudentsController;
 use App\Http\Controllers\EnrollmentController;
 
 Route::get('/', function () {
@@ -56,6 +57,8 @@ Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
     Route::get('/course/create/{id}', [CourseController::class, 'edit'])->name('course.edit');
     Route::put('/course/update/{id}', [CourseController::class, 'update'])->name('course.update');
     Route::put('/course/updateImage/{id}', [CourseController::class, 'updateImage'])->name('course.updateImage');
+
+    Route::get('/course/{id}/enrolled', [EnrolledStudentsController::class, 'index'])->name('course.enrolled');
 
     // Chapter
     Route::post('/chapter/create', [CourseChapterController::class, 'store'])->name('chapter.store');

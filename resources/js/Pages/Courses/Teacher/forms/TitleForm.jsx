@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import {  useSnackbar } from "notistack";
+import { useSnackbar } from "notistack";
 
 function TitleForm({ course }) {
   const { id, course_title } = course;
@@ -59,7 +59,7 @@ function TitleForm({ course }) {
           )}
           <div>
             <Button>Save</Button>
-          </div>{" "}
+          </div>
         </>
       ) : (
         <div>{course_title}</div>

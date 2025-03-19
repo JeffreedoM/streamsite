@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 // inertia
-import { router } from "@inertiajs/react";
+import { router, Link } from "@inertiajs/react";
 
 import { useRoute } from "ziggy";
 function CreateCourse() {
@@ -53,7 +53,7 @@ function CreateCourse() {
               variant="outline"
               className="mr-2 border-none"
             >
-              Cancel
+              <Link href="/teacher/courses">Cancel</Link>
             </Button>
             <Button type="submit">Continue</Button>
           </div>

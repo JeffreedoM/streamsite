@@ -19,11 +19,13 @@ function CourseDetails({
   chapters,
   is_completed,
   progress,
+  completionPercentage,
 }) {
   // console.log(chapter);
   // console.log(chapters);
   // console.log(video_url);
   // console.log(chapter.id);
+  console.log(`${completionPercentage}% finished`);
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -107,6 +109,17 @@ function CourseDetails({
         <div className="rounded-md border xl:col-span-1">
           <h3 className="p-4 text-xl font-semibold">{course.course_title}</h3>
 
+          {/* percentage of finished */}
+          <div className="mb-5 px-4 text-green-700 dark:text-green-600">
+            <div className="mb-2 rounded-md bg-muted">
+              <div
+                className="h-[8px] rounded-md bg-green-700 dark:bg-green-600"
+                style={{ width: `${completionPercentage}%` }}
+              ></div>
+            </div>
+            <h4 className="text-sm font-semibold">{`${completionPercentage}% Complete`}</h4>
+          </div>
+
           <div className="flex h-[300px] flex-col space-y-2 overflow-y-auto overflow-x-hidden xl:h-auto">
             {chapters.map((chapter, i) => {
               // Determine if this chapter's link matches the current URL
@@ -117,7 +130,7 @@ function CourseDetails({
                 <Link
                   href={`/courses/${course.id}/${chapter.id}`}
                   className={`flex cursor-pointer p-4 text-sm hover:bg-muted ${
-                    isActive ? "bg-muted" : ""
+                    isActive ? "border-l-4 border-l-green-500 bg-muted" : ""
                   }`}
                 >
                   <div className="w-6">{i + 1}.</div>

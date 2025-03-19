@@ -50,6 +50,11 @@ export const columns = [
                 Edit Course
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/course/${row.original.id}/enrolled`}>
+                Enrolled Students
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

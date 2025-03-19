@@ -160,15 +160,12 @@ function ChapterForm({ course, course_chapters }) {
               id={chapter.id}
               key={chapter.id}
               value={chapter}
-              className="flex cursor-grab items-center justify-between rounded-sm bg-primary/20 p-4 pl-6 active:cursor-grabbing"
+              className="flex cursor-grab items-center justify-between rounded-sm bg-primary/20 active:cursor-grabbing"
             >
-              <div>
-                <h4>{chapter.chapter_name}</h4>
-                {/* <p>{chapter.chapter_description}</p> */}
-              </div>
+              <h4 className="p-4 pl-6 font-semibold">{chapter.chapter_name}</h4>
               <Link
                 href={`/chapter/${chapter.id}`}
-                className="flex cursor-pointer text-xs"
+                className="mr-2 cursor-pointer p-2 text-xs"
               >
                 <Pencil size={18} />
               </Link>
