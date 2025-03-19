@@ -155,9 +155,9 @@ CourseDetails.layout = (page) => (
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem className="hidden md:block">
-            <BreadcrumbItem href="#" className="text-primary">
-              Courses
-            </BreadcrumbItem>
+            <BreadcrumbLink>
+              <Link href="/courses">Courses</Link>
+            </BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

@@ -21,9 +21,10 @@ class StudentController extends Controller
     {
         $user = Auth::user();
 
-        // Fetch unenrolled courses (published and not enrolled by the user)
+        // Fetch unenrolled courses with chapter count
         $unenrolledCourses = Course::where('status', 'published')
             ->whereNotIn('id', $user->courses->pluck('id'))
+            ->withCount('chapters') // Count related chapters
             ->get()
             ->map(function ($course) {
                 // Append the full course_image URL
@@ -33,7 +34,7 @@ class StudentController extends Controller
                 return $course;
             });
 
-        // Fetch enrolled courses for the user
+        // Fetch enrolled courses with chapter count
         $enrolledCourses = $user->courses->map(function ($course) {
             // Append the full course_image URL
             $course->course_image = $course->course_image
@@ -47,6 +48,7 @@ class StudentController extends Controller
             'enrolledCourses' => $enrolledCourses,
         ]);
     }
+
 
 
 

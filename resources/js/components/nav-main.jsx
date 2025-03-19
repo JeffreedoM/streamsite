@@ -59,14 +59,14 @@ export function NavMain({ items }) {
                 ))} */}
 
         {items.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild>
               <Link
                 href={
-                  item.title == "Courses"
-                    ? activeRole == "teacher"
-                      ? (item.url = "/teacher/courses")
-                      : (item.url = "/courses")
+                  item.title === "Courses"
+                    ? activeRole === "teacher"
+                      ? "/teacher/courses"
+                      : "/courses"
                     : item.url
                 }
               >
