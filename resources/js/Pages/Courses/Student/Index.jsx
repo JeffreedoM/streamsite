@@ -55,6 +55,7 @@ const Index = ({ enrolledCourses, unenrolledCourses }) => {
   );
 
   console.log(unenrolledCourses);
+  console.log("enrolled: ", enrolledCourses);
 
   return (
     <Tabs defaultValue="enrolled">

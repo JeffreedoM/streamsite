@@ -10,7 +10,6 @@ use App\Models\UserCourseProgress;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-use function Laravel\Prompts\progress;
 
 class StudentController extends Controller
 {
@@ -24,30 +23,42 @@ class StudentController extends Controller
         // Fetch unenrolled courses with chapter count
         $unenrolledCourses = Course::where('status', 'published')
             ->whereNotIn('id', $user->courses->pluck('id'))
-            ->withCount('chapters') // Count related chapters
+            ->withCount('chapters')
             ->get()
             ->map(function ($course) {
-                // Append the full course_image URL
-                $course->course_image = $course->course_image
-                    ? Storage::url($course->course_image)
-                    : null;
+                $course->course_image = $course->course_image ? Storage::url($course->course_image) : null;
                 return $course;
             });
 
-        // Fetch enrolled courses with chapter count
-        $enrolledCourses = $user->courses->map(function ($course) {
-            // Append the full course_image URL
-            $course->course_image = $course->course_image
-                ? Storage::url($course->course_image)
-                : null;
-            return $course;
-        });
+        // Fetch enrolled courses with chapter count & progress
+        $enrolledCourses = Course::whereIn('id', $user->courses->pluck('id'))
+            ->withCount('chapters')
+            ->withCount([
+                'chapters as completed_chapters_count' => function ($query) use ($user) {
+                    $query->whereHas('progress', function ($progressQuery) use ($user) {
+                        $progressQuery->where('user_id', $user->id)
+                            ->where('is_completed', 1);
+                    });
+                }
+            ])
+            ->get()
+            ->map(function ($course) {
+                $course->course_image = $course->course_image ? Storage::url($course->course_image) : null;
+
+                // Calculate progress
+                $completedChapters = $course->completed_chapters_count ?? 0;
+                $totalChapters = $course->chapters_count ?? 0;
+                $course->progress = $totalChapters > 0 ? round(($completedChapters / $totalChapters) * 100) : 0;
+
+                return $course;
+            });
 
         return Inertia::render('Courses/Student/Index', [
             'unenrolledCourses' => $unenrolledCourses,
             'enrolledCourses' => $enrolledCourses,
         ]);
     }
+
 
 
 
