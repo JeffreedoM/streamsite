@@ -126,7 +126,7 @@ class StudentController extends Controller
 
         // Calculate percentage
         $completionPercentage = $totalChapters > 0
-            ? round(($completedChapters / $totalChapters) * 100, 2)
+            ? round(($completedChapters / $totalChapters) * 100)
             : 0;
         // dd($progress);
 
