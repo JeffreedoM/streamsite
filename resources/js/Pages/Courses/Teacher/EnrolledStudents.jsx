@@ -1,7 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { TeacherLayout } from "../../../layouts/TeacherLayout";
 
-function EnrolledStudents() {
-  return <div>EnrolledStudents</div>;
+// inertia
+import { router, useForm, usePage, Link } from "@inertiajs/react";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+function EnrolledStudents({ course, enrolledStudents }) {
+  return (
+    <div>
+      EnrolledStudents
+      {enrolledStudents &&
+        enrolledStudents.map((student) => (
+          <div key={student.id}>{student.name}</div>
+        ))}
+    </div>
+  );
 }
 
 EnrolledStudents.layout = (page) => (

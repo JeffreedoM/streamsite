@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Course;
+use Inertia\Controller;
 use Illuminate\Http\Request;
 
 class EnrolledStudentsController extends Controller
@@ -9,11 +12,7 @@ class EnrolledStudentsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $enrolledStudents = Enrollments::all();
-        return Inertia::render('EnrolledStudents', ['enrolledStudents' => $enrolledStudents]);
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -34,9 +33,15 @@ class EnrolledStudentsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $courseId)
     {
-        //
+        $course = Course::with('students')->findOrFail($courseId);
+
+        // dd($course->students);
+        return Inertia::render('Courses/Teacher/EnrolledStudents', [
+            'course' => $course,
+            'enrolledStudents' => $course->students
+        ]);
     }
 
     /**
