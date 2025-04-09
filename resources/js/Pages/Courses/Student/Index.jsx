@@ -86,14 +86,14 @@ const Index = ({ enrolledCourses, unenrolledCourses }) => {
             <Link
               key={course.id}
               href={`courses/${course.id}`}
-              className="group flex max-h-[280px] cursor-pointer flex-col gap-y-2 overflow-hidden bg-background"
+              className="group flex max-h-[280px] cursor-pointer flex-col gap-y-4 overflow-hidden border bg-background pb-3"
             >
               <img
                 src={course.course_image ? course.course_image : img}
                 alt=""
                 className="h-[150px] origin-bottom overflow-hidden object-cover transition-transform duration-150 group-hover:scale-110 md:h-[200px]"
               />
-              <div className="flex flex-grow flex-col justify-between space-y-2">
+              <div className="flex h-16 flex-col justify-between space-y-2 px-3 text-left">
                 <h3 className="line-clamp-2 text-sm font-semibold">
                   {course.course_title}
                 </h3>
@@ -124,13 +124,13 @@ const Index = ({ enrolledCourses, unenrolledCourses }) => {
         <div className="mx-auto grid max-w-screen-2xl grid-cols-2 gap-x-5 gap-y-8 lg:grid-cols-3 xl:grid-cols-4">
           {filteredunEnrolledCourses.map((course) => (
             <Dialog key={course.id}>
-              <DialogTrigger className="group flex max-h-[280px] cursor-pointer flex-col gap-y-2 overflow-hidden bg-background">
+              <DialogTrigger className="group flex max-h-[280px] cursor-pointer flex-col gap-y-4 overflow-hidden border bg-background pb-3">
                 <img
                   src={course.course_image ? course.course_image : img}
                   alt=""
                   className="h-[150px] w-full origin-bottom overflow-hidden object-cover transition-transform duration-150 group-hover:scale-110 md:h-[200px]"
                 />
-                <div className="flex flex-col justify-between space-y-2 text-left">
+                <div className="flex h-16 flex-col justify-between space-y-2 px-3 text-left">
                   <h3 className="line-clamp-2 text-sm font-semibold">
                     {course.course_title}
                   </h3>

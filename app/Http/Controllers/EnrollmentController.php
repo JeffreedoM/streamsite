@@ -26,7 +26,11 @@ class EnrollmentController extends Controller
             } else {
                 // Password matches
                 // Enroll the user
-                $user->courses()->attach($courseId, ['enrolled_at' => now()]);
+                $user->courses()->attach($courseId, [
+                    'enrolled_at' => now(),
+                    'expiration_date' => now()->addYear(),
+                    'status' => 1,
+                ]);
             }
         }
 

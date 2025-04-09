@@ -12,15 +12,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { EnhrolledStudentsTable } from "../../../components/data-table/enrolledStudentsTable";
+import { enrolledStudentsColumns } from "../../../components/data-table/enrolledStudentsColumns";
 
 function EnrolledStudents({ course, enrolledStudents }) {
+  console.log("enrolled students: ", enrolledStudents);
   return (
     <div>
-      EnrolledStudents
-      {enrolledStudents &&
-        enrolledStudents.map((student) => (
-          <div key={student.id}>{student.name}</div>
-        ))}
+      <EnhrolledStudentsTable
+        columns={enrolledStudentsColumns}
+        data={enrolledStudents}
+      ></EnhrolledStudentsTable>
     </div>
   );
 }

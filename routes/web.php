@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
 
     // Enrolled Students
     Route::get('/course/{id}/enrolled', [EnrolledStudentsController::class, 'show'])->name('enrolled-students.show');
+    Route::put('/course/{id}/enrolled/update-expiration', [EnrolledStudentsController::class, 'updateExpirationDate'])->name('enrolled-students.updateExpirationDate');
 
     // Chapter
     Route::post('/chapter/create', [CourseChapterController::class, 'store'])->name('chapter.store');

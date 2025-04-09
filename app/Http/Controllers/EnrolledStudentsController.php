@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Course;
 use Inertia\Controller;
@@ -40,7 +41,16 @@ class EnrolledStudentsController extends Controller
         // dd($course->students);
         return Inertia::render('Courses/Teacher/EnrolledStudents', [
             'course' => $course,
-            'enrolledStudents' => $course->students
+            'enrolledStudents' => $course->students->map(function ($student) {
+                return [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'email' => $student->email,
+                    'enrolled_at' => $student->pivot->enrolled_at,
+                    'expiration_date' => $student->pivot->expiration_date,
+                    'status' => $student->pivot->status,
+                ];
+            })
         ]);
     }
 
@@ -58,6 +68,30 @@ class EnrolledStudentsController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+    public function updateExpirationDate(Request $request)
+    {
+        $newExpirationDate = $request->input('expiration_date');
+        $courseId = $request->input('courseId');
+        $userId = $request->input('userId');
+
+
+        $user = User::findOrFail($userId);
+        $course = Course::findOrFail($courseId);
+
+
+        $user->courses()->updateExistingPivot($courseId, [
+            'expiration_date' => $newExpirationDate,
+        ]);
+
+        // return response()->json([
+        //     'message' => 'Expiration date updated successfully.',
+        //     'courseId' => $courseId,
+        //     'userId' => $userId,
+        //     'newExpirationDate' => $newExpirationDate
+        // ]);
+
+        return redirect()->route('enrolled-students.show', $courseId);
     }
 
     /**

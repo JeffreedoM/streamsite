@@ -13,6 +13,15 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Manual seed
+        Course::create([
+            'course_title' => 'App Development',
+            'course_description' => 'Learn App Development from Scratch',
+            'course_image' => "course_images/7M5lKUORXlHxYUheGzfpRfuiMyvVFCQGYqnku7Pb.png", // looks like a legit Google ID-ish
+            'password' => "pass123",
+            'status' => "published",
+        ]);
+
         Course::factory()->count(20)->create();
     }
 }
