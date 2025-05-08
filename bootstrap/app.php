@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckEnrollmentStatus;
 use App\Http\Middleware\CheckRole;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'role' => CheckRole::class,
+            'check.enrollment.status' => CheckEnrollmentStatus::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

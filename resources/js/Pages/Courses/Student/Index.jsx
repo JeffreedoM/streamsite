@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { TeacherLayout } from "../../../layouts/TeacherLayout";
 import {
   Breadcrumb,
@@ -34,10 +34,12 @@ import { Label } from "@/components/ui/label";
 import img from "../../../../../storage/app/public/course_images/img-placeholder.jpg";
 import { Link, router, usePage } from "@inertiajs/react";
 import { useRoute } from "ziggy";
+import { SnackbarProvider, useSnackbar } from "notistack";
 const Index = ({ enrolledCourses, unenrolledCourses }) => {
   const route = useRoute(Ziggy);
   const [password, setPassword] = useState("");
-  const { errors } = usePage().props;
+  const { errors, flash } = usePage().props;
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const enroll = useCallback((id, password) => {
     console.log("course id from enroll fn: ", id);
@@ -54,9 +56,31 @@ const Index = ({ enrolledCourses, unenrolledCourses }) => {
     course.course_title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  console.log(unenrolledCourses);
-  console.log("enrolled: ", enrolledCourses);
+  console.log(flash.message);
 
+  useEffect(() => {
+    if (flash.message) {
+      const key = enqueueSnackbar(
+        flash.message + " Please contact the Administrator",
+        {
+          variant: "warning",
+          persist: true,
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "right",
+          },
+          action: (snackbarKey) => (
+            <button
+              onClick={() => closeSnackbar(snackbarKey)}
+              className="ml-4 rounded px-2 py-1 text-sm text-white transition"
+            >
+              Dismiss
+            </button>
+          ),
+        },
+      );
+    }
+  }, [flash.message]);
   return (
     <Tabs defaultValue="enrolled">
       <TabsList>

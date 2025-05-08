@@ -61,6 +61,7 @@ Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
     // Enrolled Students
     Route::get('/course/{id}/enrolled', [EnrolledStudentsController::class, 'show'])->name('enrolled-students.show');
     Route::put('/course/{id}/enrolled/update-expiration', [EnrolledStudentsController::class, 'updateExpirationDate'])->name('enrolled-students.updateExpirationDate');
+    Route::put('/course/{id}/enrolled/toggle-status', [EnrolledStudentsController::class, 'toggleEnrolledStudentStatus'])->name('enrolled-students.toggleStatus');
 
     // Chapter
     Route::post('/chapter/create', [CourseChapterController::class, 'store'])->name('chapter.store');
@@ -79,22 +80,41 @@ Route::middleware(['auth:sanctum', 'role:teacher'])->group(function () {
 });
 
 
+// Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
+//     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+//     // Route::get('/courses', [CourseController::class, 'index'])->name('course.index');
+//     // Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
+
+//     Route::get('/courses', [StudentController::class, 'index'])->name('student-course.index');
+
+
+//     // Enrollment
+//     Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('student.enroll');
+
+//     // Route::get('/courses/{course_id}/progress', [StudentController::class, 'getProgress'])->name('course.progress');
+//     Route::post('/chapter/{chapter_id}/complete', [StudentController::class, 'markComplete'])->name('chapter.complete');
+
+//     Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('enrollment.enroll');
+//     Route::get('/courses/enroll/{course_id}', [EnrollmentController::class, 'viewEnrollment'])->name('enrollment.view');
+
+//     Route::get('/courses/{course_id}/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show')->middleware(['check.enrollment.status']);
+// });
+
 Route::middleware(['auth:sanctum', 'role:student'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    // Route::get('/courses', [CourseController::class, 'index'])->name('course.index');
-    // Route::post('/switch-role', [RoleController::class, 'switchRole'])->name('switchRole');
-
     Route::get('/courses', [StudentController::class, 'index'])->name('student-course.index');
-
 
     // Enrollment
     Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('student.enroll');
-
-    // Route::get('/courses/{course_id}/progress', [StudentController::class, 'getProgress'])->name('course.progress');
-    Route::post('/chapter/{chapter_id}/complete', [StudentController::class, 'markComplete'])->name('chapter.complete');
-
-    Route::post('/courses/{course_id}', [EnrollmentController::class, 'enroll'])->name('enrollment.enroll');
     Route::get('/courses/enroll/{course_id}', [EnrollmentController::class, 'viewEnrollment'])->name('enrollment.view');
 
-    Route::get('/courses/{course_id}/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show');
+    // 🧠 Nested middleware for course content that needs status check
+    Route::middleware(['check.enrollment.status'])->prefix('courses/{course_id}')->group(function () {
+        Route::get('/{chapter_id?}', [StudentController::class, 'show'])->name('student-course.show');
+        Route::post('/chapter/{chapter_id}/complete', [StudentController::class, 'markComplete'])->name('chapter.complete');
+
+        // 🔐 Add more course-only routes here:
+        // Route::get('/resources', [StudentController::class, 'resources'])->name('course.resources');
+        // Route::get('/quiz/{quiz_id}', [StudentController::class, 'quiz'])->name('course.quiz');
+    });
 });

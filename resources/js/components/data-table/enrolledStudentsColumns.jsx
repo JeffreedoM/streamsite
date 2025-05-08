@@ -37,10 +37,19 @@ import { Link } from "@inertiajs/react";
 import { useCallback, useState } from "react";
 import { useSnackbar } from "notistack";
 
+const globalFilterFn = (row, columnId, filterValue) => {
+  const name = row.original.name?.toLowerCase() ?? "";
+  const email = row.original.email?.toLowerCase() ?? "";
+  const search = filterValue.toLowerCase();
+
+  return name.includes(search) || email.includes(search);
+};
+
 export const enrolledStudentsColumns = [
   {
     accessorKey: "name",
     header: "Name",
+    filterFn: globalFilterFn,
   },
   {
     accessorKey: "email",
@@ -136,8 +145,10 @@ export const enrolledStudentsColumns = [
         <>
           {row.original.status == "1" ? (
             <span className="text-green-600">Active</span>
-          ) : (
+          ) : row.original.status == "2" ? (
             <span className="text-destructive">Expired</span>
+          ) : (
+            <span className="text-gray-500">Disabled</span>
           )}
         </>
       );
@@ -146,29 +157,23 @@ export const enrolledStudentsColumns = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const { id, expiration_date } = row.original;
+      const { id, expiration_date, status } = row.original;
       const courseId = usePage().props.course.id;
       const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
       const [openDialog, setOpenDialog] = useState(false);
       const [openDropdown, setOpenDropdown] = useState(false);
-      const { data, setData, processing, errors } = useForm({
+      const form = useForm({
         expiration_date: expiration_date,
+        userId: id,
+        courseId: courseId,
       });
 
-      console.log("course id: ", courseId);
-      const submit = useCallback((id, expiration_date, courseId) => {
-        // e.preventDefault(); // Might need this if used in a <form>
-        router.post(
-          `/course/${id}/enrolled/update-expiration`,
-          {
-            _method: "put",
-            userId: id,
-            expiration_date,
-            courseId, // courseId from outer scope
-          },
-          {
-            onSuccess: (response) => {
+      const submit = useCallback(
+        (id, expiration_date, courseId) => {
+          form.put(`/course/${id}/enrolled/update-expiration`, {
+            data: { userId: id, expiration_date, courseId },
+            onSuccess: () => {
               enqueueSnackbar("Expiration updated!", {
                 variant: "success",
                 anchorOrigin: {
@@ -182,9 +187,10 @@ export const enrolledStudentsColumns = [
             onError: (error) => {
               console.error("Update failed:", error);
             },
-          },
-        );
-      }, []); // add courseId to dependencies
+          });
+        },
+        [form],
+      );
 
       return (
         <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
@@ -200,8 +206,8 @@ export const enrolledStudentsColumns = [
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Dialog key={id} open={openDialog} onOpenChange={setOpenDialog}>
-                <DialogTrigger className="w-full py-1.5 hover:bg-accent hover:text-accent-foreground">
-                  <span className="py-1.5 text-sm">Edit Expiration</span>
+                <DialogTrigger className="w-full rounded-sm px-2 py-1.5 text-left hover:bg-accent hover:text-accent-foreground">
+                  <span className="text-sm">Edit Expiration</span>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -217,21 +223,27 @@ export const enrolledStudentsColumns = [
                       <Label htmlFor="expiration_date" className="text-right">
                         Expiration Date
                       </Label>
-                      <Input
+                      <input
+                        type="date"
                         id="expiration_date"
-                        value={data.expiration_date}
+                        value={form.data.expiration_date}
                         onChange={(e) =>
-                          setData("expiration_date", e.target.value)
+                          form.setData("expiration_date", e.target.value)
                         }
-                        className="col-span-3"
+                        className="col-span-3 w-full rounded-md border p-2"
                       />
+                      {form.errors.expiration_date && (
+                        <div className="col-span-4 w-full text-sm text-destructive">
+                          {form.errors.expiration_date}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <DialogFooter>
                     <Button
-                      onClick={() => submit(id, data.expiration_date, courseId)}
+                      onClick={() => submit(id, expiration_date, courseId)}
                       type="submit"
-                      disabled={processing}
+                      disabled={form.processing}
                     >
                       Save changes
                     </Button>
@@ -239,6 +251,17 @@ export const enrolledStudentsColumns = [
                 </DialogContent>
               </Dialog>
             </DropdownMenuItem>
+            <Link
+              as="button"
+              href={`/course/${id}/enrolled/toggle-status`}
+              method="put"
+              data={{ userId: id, courseId, status, expiration_date }}
+              className="w-full"
+            >
+              <DropdownMenuItem>
+                {status != 3 ? "Disable" : "Enable"}
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );

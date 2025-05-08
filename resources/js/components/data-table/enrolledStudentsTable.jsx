@@ -40,7 +40,7 @@ export function EnhrolledStudentsTable({ columns, data }) {
     <>
       <div className="flex items-center justify-between py-4">
         <Input
-          placeholder="Search student..."
+          placeholder="Search name or email..."
           value={table.getColumn("name")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)

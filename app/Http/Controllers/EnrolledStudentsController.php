@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Course;
@@ -71,9 +72,18 @@ class EnrolledStudentsController extends Controller
     }
     public function updateExpirationDate(Request $request)
     {
-        $newExpirationDate = $request->input('expiration_date');
         $courseId = $request->input('courseId');
         $userId = $request->input('userId');
+        $field = $request->validate([
+            'expiration_date' => 'required|date'
+        ]);
+
+        $newExpirationDate = $field['expiration_date'];
+
+        $expiration = Carbon::parse($newExpirationDate);
+        $today = Carbon::today();
+
+        $newStatus = $expiration->greaterThan($today) ? 1 : 2; // 1 = active, 2 = expired
 
 
         $user = User::findOrFail($userId);
@@ -82,14 +92,38 @@ class EnrolledStudentsController extends Controller
 
         $user->courses()->updateExistingPivot($courseId, [
             'expiration_date' => $newExpirationDate,
+            'status' => $newStatus,
+
         ]);
 
-        // return response()->json([
-        //     'message' => 'Expiration date updated successfully.',
-        //     'courseId' => $courseId,
-        //     'userId' => $userId,
-        //     'newExpirationDate' => $newExpirationDate
-        // ]);
+        return redirect()->route('enrolled-students.show', $courseId);
+    }
+
+    public function toggleEnrolledStudentStatus(Request $request)
+    {
+        $courseId = $request->input('courseId');
+        $userId = $request->input('userId');
+        $status = $request->input('status');
+        $expirationDate = $request->input('expiration_date'); // Make sure this is sent if needed
+
+        $today = Carbon::today();
+
+        $user = User::findOrFail($userId);
+
+        // Set new status
+        if ($status <= 2) {
+            // If currently active or expired, set to disabled (3)
+            $newStatus = 3;
+        } else {
+            // If currently disabled, use expiration to set to 1 or 2
+            $expiration = Carbon::parse($expirationDate);
+            $newStatus = $expiration->greaterThanOrEqualTo($today) ? 1 : 2;
+        }
+
+        // Update pivot
+        $user->courses()->updateExistingPivot($courseId, [
+            'status' => $newStatus,
+        ]);
 
         return redirect()->route('enrolled-students.show', $courseId);
     }
